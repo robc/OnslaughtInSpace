@@ -16,26 +16,30 @@ public class TitleScreenController : MonoBehaviour
 	 * For Game Over, show the Game Over message
 	 */
 	
-	// [SerializeField] private TextMesh titleLabel;
+	[SerializeField] private TextMesh titleLabel;
 	[SerializeField] private TextMesh startGameActionLabel;
+	[SerializeField] private TextMesh instructionsCreditsLabel;
 	[SerializeField] private TextMesh gameOverLabel;
 	[SerializeField] private TextMesh scoreLabel;
 	[SerializeField] private TextMesh waveLabel;
 	
 	public void ShowTitleScreen()
 	{
+		titleLabel.gameObject.SetActive(true);
 		startGameActionLabel.gameObject.SetActive(true);
 		gameOverLabel.gameObject.SetActive(false);
 	}
 	
 	public void ShowInGameScreen()
 	{
+		titleLabel.gameObject.SetActive(false);
 		startGameActionLabel.gameObject.SetActive(false);
 		gameOverLabel.gameObject.SetActive(false);
 	}
 	
 	public void ShowGameOverScreen()
 	{
+		titleLabel.gameObject.SetActive(false);
 		startGameActionLabel.gameObject.SetActive(false);
 		gameOverLabel.gameObject.SetActive(true);
 	}

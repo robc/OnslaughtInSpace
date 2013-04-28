@@ -26,6 +26,7 @@ public class GameLoopController : MonoBehaviour
 	
 	void Awake()
 	{
+		player.gameObject.SetActive(false);
 		gameLoopState = GameLoopState.Init;
 		fireIsDown = false;
 		
@@ -77,11 +78,16 @@ public class GameLoopController : MonoBehaviour
 		waveNumber = 0;
 		titleScreenController.UpdateScoreAndWaveLabels(score, waveNumber);
 
-		gameLoopState = GameLoopState.StartGame;
+		gameLoopState = GameLoopState.TitleScreen;
 	}
 	
 	private void OnTitleScreen()
 	{
+		titleScreenController.ShowTitleScreen();
+		
+		if (fireIsDown && !Input.GetButton("Fire"))
+			gameLoopState = GameLoopState.StartGame;
+		fireIsDown = Input.GetButton("Fire");
 	}
 	
 	private void OnStartGame()
@@ -90,6 +96,7 @@ public class GameLoopController : MonoBehaviour
 		waveNumber = 0;
 		titleScreenController.UpdateScoreAndWaveLabels(score, waveNumber);
 		titleScreenController.ShowInGameScreen();
+		fireIsDown = false;
 		
 		player.gameObject.SetActive(true);
 		gameLoopState = GameLoopState.StartWave;
@@ -116,7 +123,12 @@ public class GameLoopController : MonoBehaviour
 		enemyManager.StopEnemySpawning();
 		titleScreenController.ShowGameOverScreen();
 		
-		// Should have a delay here before we switch over to the title screen, no?
+		Invoke("SwitchToTitleState", 2f);
+	}
+	
+	private void SwitchToTitleState()
+	{
+		gameLoopState = GameLoopState.TitleScreen;
 	}
 	
 	private void PlayerDestroyed()
