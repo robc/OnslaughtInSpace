@@ -82,7 +82,7 @@ public class GameLoopController : MonoBehaviour
 	{
 		score = 0;
 		waveNumber = 0;
-		titleScreenController.UpdateScoreAndWaveLabels(score, waveNumber);
+		UpdateScoresAndWave();
 
 		gameLoopState = GameLoopState.TitleScreen;
 	}
@@ -100,8 +100,8 @@ public class GameLoopController : MonoBehaviour
 	{
 		score = 0;
 		waveNumber = 0;
-		titleScreenController.UpdateScoreAndWaveLabels(score, waveNumber);
 		titleScreenController.ShowInGameScreen();
+		UpdateScoresAndWave();
 		fireIsDown = false;
 		scoreMultiplier = 1.0f;
 		
@@ -113,7 +113,7 @@ public class GameLoopController : MonoBehaviour
 	{
 		enemyManager.StartWave(++waveNumber);
 		gameLoopState = GameLoopState.InGame;
-		titleScreenController.UpdateScoreAndWaveLabels(score, waveNumber);
+		UpdateScoresAndWave();
 	}
 		
 	private void OnInGame(float deltaTime)
@@ -161,16 +161,25 @@ public class GameLoopController : MonoBehaviour
 	{
 		player.gameObject.SetActive(false);
 		gameLoopState = GameLoopState.GameOver;
-		titleScreenController.UpdateScoreAndWaveLabels(score, waveNumber);
+		UpdateScoresAndWave();
 	}
 	
 	private void EnemyDestroyed()
 	{
 		scoreMultiplier *= 1.15f;
 		score += Mathf.RoundToInt(10.0f * scoreMultiplier);
-		titleScreenController.UpdateScoreAndWaveLabels(score, waveNumber);
+		UpdateScoresAndWave();
 
 		if (enemyManager.IsWaveClear)
 			gameLoopState = GameLoopState.StartWave;
+	}
+	
+	private void UpdateScoresAndWave()
+	{
+		titleScreenController.UpdateScoreAndWaveLabels(
+			score,
+			waveNumber,
+			Mathf.Max(score, PlayerPrefs.GetInt("BestScore", 0))
+		);
 	}
 }

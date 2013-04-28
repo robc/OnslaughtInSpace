@@ -3,24 +3,12 @@ using System.Collections;
 
 public class TitleScreenController : MonoBehaviour
 {
-	/**
-	 * Want states:
-	 * Title Screen (title text, instructions text, press space to start text, etc.)
-	 * In Game Screen (score, wave, etc.)
-	 * Game Over Screen (Game Over message, etc.)
-	 */
-	
-	/**
-	 * Assumptions:
-	 * Keep the score, wave & copyright always visible.
-	 * For Game Over, show the Game Over message
-	 */
-	
 	[SerializeField] private TextMesh titleLabel;
 	[SerializeField] private TextMesh startGameActionLabel;
 	[SerializeField] private TextMesh instructionsCreditsLabel;
 	[SerializeField] private TextMesh gameOverLabel;
 	[SerializeField] private TextMesh scoreLabel;
+	[SerializeField] private TextMesh highScoreLabel;
 	[SerializeField] private TextMesh waveLabel;
 	[SerializeField] private TextMesh gameCompleteTitleLabel;
 	[SerializeField] private TextMesh gameCompleteMessageLabel;
@@ -61,9 +49,10 @@ public class TitleScreenController : MonoBehaviour
 		gameCompleteMessageLabel.gameObject.SetActive(true);
 	}
 	
-	public void UpdateScoreAndWaveLabels(int score, int wave)
+	public void UpdateScoreAndWaveLabels(int score, int wave, int hiScore)
 	{
 		scoreLabel.text = string.Format("{0:00000000}", score);
+		highScoreLabel.text = string.Format("{0:00000000}", hiScore);
 		waveLabel.text = string.Format("{0:00}", wave);
 	}
 }
