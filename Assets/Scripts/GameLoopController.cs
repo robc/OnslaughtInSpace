@@ -21,6 +21,7 @@ public class GameLoopController : MonoBehaviour
 	private GameLoopState gameLoopState;
 	private int waveNumber;
 	private int score;
+	private float scoreMultiplier;
 	
 	private bool fireIsDown;
 	
@@ -97,6 +98,7 @@ public class GameLoopController : MonoBehaviour
 		titleScreenController.UpdateScoreAndWaveLabels(score, waveNumber);
 		titleScreenController.ShowInGameScreen();
 		fireIsDown = false;
+		scoreMultiplier = 1.0f;
 		
 		player.gameObject.SetActive(true);
 		gameLoopState = GameLoopState.StartWave;
@@ -116,6 +118,8 @@ public class GameLoopController : MonoBehaviour
 		if (fireIsDown && !Input.GetButton("Fire"))
 			playerLauncher.FireBullet();
 		fireIsDown = Input.GetButton("Fire");
+		
+		scoreMultiplier = Mathf.Max(1.0f, scoreMultiplier - (0.25f * deltaTime));
 	}
 	
 	private void OnGameOver()
@@ -140,7 +144,8 @@ public class GameLoopController : MonoBehaviour
 	
 	private void EnemyDestroyed()
 	{
-		score += 10;
+		scoreMultiplier *= 1.15f;
+		score += Mathf.RoundToInt(10.0f * scoreMultiplier);
 		titleScreenController.UpdateScoreAndWaveLabels(score, waveNumber);
 
 		if (enemyManager.IsWaveClear)
