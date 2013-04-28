@@ -124,6 +124,12 @@ public class GameLoopController : MonoBehaviour
 	
 	private void OnGameOver()
 	{
+		PlayerPrefs.SetInt(
+			"BestScore",
+			Mathf.Max(PlayerPrefs.GetInt("BestScore", 0), score)
+		);
+		PlayerPrefs.Save();
+		
 		enemyManager.StopEnemySpawning();
 		titleScreenController.ShowGameOverScreen();
 		
