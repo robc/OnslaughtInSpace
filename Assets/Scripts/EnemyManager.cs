@@ -103,6 +103,8 @@ public class EnemyManager : MonoBehaviour
 				enemy.transform.rotation = Quaternion.Euler(0, headingToTarget, 0);
 				enemy.rigidbody.AddForce(enemy.transform.TransformDirection(Vector3.forward) * ((Random.value * enemyForceDelta) + minEnemyForce));
 				
+				enemy.audio.Play();
+				
 				numberOfEnemiesSpawned++;
 			}
 
@@ -112,11 +114,10 @@ public class EnemyManager : MonoBehaviour
 	
 	private void EnemyDestroyed(EnemyCollision enemy)
 	{
+		// Trigger an explosion effect.
+
 		spawnedEnemies.Remove(enemy);
 		Destroy(enemy.gameObject);
-
-		// Trigger an explosion effect.
-		// Play an explosion sound.
 
 		if (OnEnemyDestroyed != null)
 			OnEnemyDestroyed();

@@ -28,9 +28,9 @@ public class GameLoopController : MonoBehaviour
 	
 	void Awake()
 	{
-		player.gameObject.SetActive(false);
 		gameLoopState = GameLoopState.Init;
 		fireIsDown = false;
+		SetPlayerRenderers(false);
 		
 		enemyManager.OnEnemyDestroyed = EnemyDestroyed;
 		enemyManager.OnTargetReached = PlayerDestroyed;
@@ -105,7 +105,7 @@ public class GameLoopController : MonoBehaviour
 		fireIsDown = false;
 		scoreMultiplier = 1.0f;
 		
-		player.gameObject.SetActive(true);
+		SetPlayerRenderers(true);
 		gameLoopState = GameLoopState.StartWave;
 	}
 	
@@ -114,6 +114,7 @@ public class GameLoopController : MonoBehaviour
 		enemyManager.StartWave(++waveNumber);
 		gameLoopState = GameLoopState.InGame;
 		UpdateScoresAndWave();
+		audio.Play();
 	}
 		
 	private void OnInGame(float deltaTime)
@@ -159,7 +160,9 @@ public class GameLoopController : MonoBehaviour
 	
 	private void PlayerDestroyed()
 	{
-		player.gameObject.SetActive(false);
+		player.audio.Play();
+		SetPlayerRenderers(false);
+		
 		gameLoopState = GameLoopState.GameOver;
 		UpdateScoresAndWave();
 	}
@@ -181,5 +184,12 @@ public class GameLoopController : MonoBehaviour
 			waveNumber,
 			Mathf.Max(score, PlayerPrefs.GetInt("BestScore", 0))
 		);
+	}
+	
+	private void SetPlayerRenderers(bool enabled)
+	{
+		Renderer [] renderers = player.GetComponentsInChildren<Renderer>();
+		for (int index = 0; index < renderers.Length; index++)
+			renderers[index].enabled = enabled;
 	}
 }
