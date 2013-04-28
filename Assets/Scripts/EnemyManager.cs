@@ -100,6 +100,9 @@ public class EnemyManager : MonoBehaviour
 				
 				Vector3 vectorToTarget = target.transform.position - enemy.transform.position;
 				float headingToTarget = Mathf.Atan2(vectorToTarget.x, vectorToTarget.z) * Mathf.Rad2Deg;
+				if (headingToTarget < 0) headingToTarget += 360.0f;
+				headingToTarget = headingToTarget % 360.0f;
+				
 				enemy.transform.rotation = Quaternion.Euler(0, headingToTarget, 0);
 				enemy.rigidbody.AddForce(enemy.transform.TransformDirection(Vector3.forward) * ((Random.value * enemyForceDelta) + minEnemyForce));
 				

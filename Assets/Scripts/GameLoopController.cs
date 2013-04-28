@@ -18,6 +18,7 @@ public class GameLoopController : MonoBehaviour
 	[SerializeField] private Launcher playerLauncher;
 	[SerializeField] private EnemyManager enemyManager;
 	[SerializeField] private TitleScreenController titleScreenController;
+	[SerializeField] private AudioClip gameCompleteClip;
 	
 	private GameLoopState gameLoopState;
 	private int waveNumber;
@@ -152,7 +153,7 @@ public class GameLoopController : MonoBehaviour
 		);
 		PlayerPrefs.Save();
 		
-		// Play some sound here.
+		audio.PlayOneShot(gameCompleteClip);
 		
 		playerLauncher.StopAutoFire();
 		titleScreenController.ShowGameCompleteScreen();
@@ -162,6 +163,7 @@ public class GameLoopController : MonoBehaviour
 	
 	private void SwitchToTitleState()
 	{
+		SetPlayerRenderers(false);
 		gameLoopState = GameLoopState.TitleScreen;
 	}
 	
@@ -180,7 +182,7 @@ public class GameLoopController : MonoBehaviour
 		score += Mathf.RoundToInt(10.0f * scoreMultiplier);
 		UpdateScoresAndWave();
 
-		if (enemyManager.IsWaveClear)
+		if (enemyManager.IsWaveClear && gameLoopState == GameLoopState.InGame)
 		{
 			if (waveNumber < 10)
 				gameLoopState = GameLoopState.StartWave;
