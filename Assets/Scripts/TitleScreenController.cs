@@ -22,12 +22,16 @@ public class TitleScreenController : MonoBehaviour
 	[SerializeField] private TextMesh gameOverLabel;
 	[SerializeField] private TextMesh scoreLabel;
 	[SerializeField] private TextMesh waveLabel;
+	[SerializeField] private TextMesh gameCompleteTitleLabel;
+	[SerializeField] private TextMesh gameCompleteMessageLabel;
 	
 	public void ShowTitleScreen()
 	{
 		titleLabel.gameObject.SetActive(true);
 		startGameActionLabel.gameObject.SetActive(true);
 		gameOverLabel.gameObject.SetActive(false);
+		gameCompleteTitleLabel.gameObject.SetActive(false);
+		gameCompleteMessageLabel.gameObject.SetActive(false);
 	}
 	
 	public void ShowInGameScreen()
@@ -35,6 +39,8 @@ public class TitleScreenController : MonoBehaviour
 		titleLabel.gameObject.SetActive(false);
 		startGameActionLabel.gameObject.SetActive(false);
 		gameOverLabel.gameObject.SetActive(false);
+		gameCompleteTitleLabel.gameObject.SetActive(false);
+		gameCompleteMessageLabel.gameObject.SetActive(false);
 	}
 	
 	public void ShowGameOverScreen()
@@ -42,6 +48,17 @@ public class TitleScreenController : MonoBehaviour
 		titleLabel.gameObject.SetActive(false);
 		startGameActionLabel.gameObject.SetActive(false);
 		gameOverLabel.gameObject.SetActive(true);
+		gameCompleteTitleLabel.gameObject.SetActive(false);
+		gameCompleteMessageLabel.gameObject.SetActive(false);
+	}
+	
+	public void ShowGameCompleteScreen()
+	{
+		titleLabel.gameObject.SetActive(false);
+		startGameActionLabel.gameObject.SetActive(false);
+		gameOverLabel.gameObject.SetActive(false);
+		gameCompleteTitleLabel.gameObject.SetActive(true);
+		gameCompleteMessageLabel.gameObject.SetActive(true);
 	}
 	
 	public void UpdateScoreAndWaveLabels(int score, int wave)

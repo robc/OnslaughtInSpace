@@ -10,7 +10,8 @@ public class GameLoopController : MonoBehaviour
 		StartGame,
 		StartWave,
 		InGame,
-		GameOver
+		GameOver,
+		GameCompleted
 	};
 	
 	[SerializeField] private PlayerMovement player;
@@ -59,7 +60,6 @@ public class GameLoopController : MonoBehaviour
 				OnStartWave();
 				break;
 			}
-			
 			case GameLoopState.InGame:
 			{
 				OnInGame(Time.smoothDeltaTime);
@@ -68,6 +68,11 @@ public class GameLoopController : MonoBehaviour
 			case GameLoopState.GameOver:
 			{
 				OnGameOver();
+				break;
+			}
+			case GameLoopState.GameCompleted:
+			{
+				OnGameComplete();
 				break;
 			}
 		}
@@ -119,7 +124,7 @@ public class GameLoopController : MonoBehaviour
 			playerLauncher.FireBullet();
 		fireIsDown = Input.GetButton("Fire");
 		
-		scoreMultiplier = Mathf.Max(1.0f, scoreMultiplier - (0.25f * deltaTime));
+		scoreMultiplier = Mathf.Clamp(scoreMultiplier - (0.2f * deltaTime), 1.0f, 100.0f);
 	}
 	
 	private void OnGameOver()
@@ -134,6 +139,17 @@ public class GameLoopController : MonoBehaviour
 		titleScreenController.ShowGameOverScreen();
 		
 		Invoke("SwitchToTitleState", 2f);
+	}
+	
+	private void OnGameComplete()
+	{
+		PlayerPrefs.SetInt(
+			"BestScore",
+			Mathf.Max(PlayerPrefs.GetInt("BestScore", 0), score)
+		);
+		PlayerPrefs.Save();
+		
+		Invoke("SwitchToTitleState", 10f);
 	}
 	
 	private void SwitchToTitleState()
