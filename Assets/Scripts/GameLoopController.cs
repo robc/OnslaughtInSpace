@@ -15,14 +15,19 @@ public class GameLoopController : MonoBehaviour
 	[SerializeField] private TextMesh scoreLabel;
 	[SerializeField] private TextMesh waveLabel;
 	[SerializeField] private PlayerMovement player;
+	[SerializeField] private Launcher playerLauncher;
 	
 	private GameLoopState gameLoopState;
 	private int waveNumber;
 	private int score;
 	
+	private bool fireIsDown;
+	
 	void Awake()
 	{
 		gameLoopState = GameLoopState.Init;
+		
+		fireIsDown = false;
 	}
 	
 	void Start()
@@ -86,6 +91,10 @@ public class GameLoopController : MonoBehaviour
 	private void OnInGame(float deltaTime)
 	{
 		player.UpdatePlayerRotation(Input.GetAxis("Horizontal"), deltaTime);
+		
+		if (fireIsDown && !Input.GetButton("Fire"))
+			playerLauncher.FireBullet();
+		fireIsDown = Input.GetButton("Fire");
 	}
 	
 	private void OnGameOver()
