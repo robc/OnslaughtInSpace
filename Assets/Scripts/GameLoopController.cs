@@ -121,9 +121,10 @@ public class GameLoopController : MonoBehaviour
 	{
 		player.UpdatePlayerRotation(Input.GetAxis("Horizontal"), deltaTime);
 		
-		if (fireIsDown && !Input.GetButton("Fire"))
-			playerLauncher.FireBullet();
-		fireIsDown = Input.GetButton("Fire");
+		if (Input.GetButton("Fire"))
+			playerLauncher.StartAutoFire();
+		else
+			playerLauncher.StopAutoFire();
 		
 		scoreMultiplier = Mathf.Clamp(scoreMultiplier - (0.2f * deltaTime), 1.0f, 100.0f);
 	}
@@ -136,6 +137,7 @@ public class GameLoopController : MonoBehaviour
 		);
 		PlayerPrefs.Save();
 		
+		playerLauncher.StopAutoFire();
 		enemyManager.StopEnemySpawning();
 		titleScreenController.ShowGameOverScreen();
 		
@@ -149,6 +151,11 @@ public class GameLoopController : MonoBehaviour
 			Mathf.Max(PlayerPrefs.GetInt("BestScore", 0), score)
 		);
 		PlayerPrefs.Save();
+		
+		// Play some sound here.
+		
+		playerLauncher.StopAutoFire();
+		titleScreenController.ShowGameCompleteScreen();
 		
 		Invoke("SwitchToTitleState", 10f);
 	}
@@ -174,7 +181,12 @@ public class GameLoopController : MonoBehaviour
 		UpdateScoresAndWave();
 
 		if (enemyManager.IsWaveClear)
-			gameLoopState = GameLoopState.StartWave;
+		{
+			if (waveNumber < 10)
+				gameLoopState = GameLoopState.StartWave;
+			else
+				gameLoopState = GameLoopState.GameCompleted;
+		}
 	}
 	
 	private void UpdateScoresAndWave()
