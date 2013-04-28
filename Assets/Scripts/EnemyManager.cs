@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class EnemyManager : MonoBehaviour
 {
 	public System.Action OnEnemyDestroyed;
+	public System.Action OnTargetReached;
 	
 	[SerializeField] private EnemyCollision enemyPrefab;
 	[SerializeField] private Transform target;
@@ -107,6 +108,7 @@ public class EnemyManager : MonoBehaviour
 		for (int count = 0; count < enemies.Length; count++)
 			Destroy(enemies[count].gameObject);
 		
-		// Fire an event to signify the game over.
+		if (OnTargetReached != null)
+			OnTargetReached();
 	}
 }

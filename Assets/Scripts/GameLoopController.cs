@@ -31,10 +31,7 @@ public class GameLoopController : MonoBehaviour
 		fireIsDown = false;
 		
 		enemyManager.OnEnemyDestroyed = EnemyDestroyed;
-	}
-	
-	void Start()
-	{
+		enemyManager.OnTargetReached = PlayerDestroyed;
 	}
 	
 	void Update()
@@ -122,6 +119,13 @@ public class GameLoopController : MonoBehaviour
 	{
 		scoreLabel.text = string.Format("{0:00000000}", score);
 		waveLabel.text = string.Format("{0:00}", waveNumber);
+	}
+	
+	private void PlayerDestroyed()
+	{
+		player.gameObject.SetActive(false);
+		gameLoopState = GameLoopState.GameOver;
+		UpdateGUI();
 	}
 	
 	private void EnemyDestroyed()
