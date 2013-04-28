@@ -13,11 +13,10 @@ public class GameLoopController : MonoBehaviour
 		GameOver
 	};
 	
-	[SerializeField] private TextMesh scoreLabel;
-	[SerializeField] private TextMesh waveLabel;
 	[SerializeField] private PlayerMovement player;
 	[SerializeField] private Launcher playerLauncher;
 	[SerializeField] private EnemyManager enemyManager;
+	[SerializeField] private TitleScreenController titleScreenController;
 	
 	private GameLoopState gameLoopState;
 	private int waveNumber;
@@ -76,7 +75,7 @@ public class GameLoopController : MonoBehaviour
 	{
 		score = 0;
 		waveNumber = 0;
-		UpdateGUI();
+		titleScreenController.UpdateScoreAndWaveLabels(score, waveNumber);
 
 		gameLoopState = GameLoopState.StartGame;
 	}
@@ -89,8 +88,10 @@ public class GameLoopController : MonoBehaviour
 	{
 		score = 0;
 		waveNumber = 0;
-		UpdateGUI();
+		titleScreenController.UpdateScoreAndWaveLabels(score, waveNumber);
+		titleScreenController.ShowInGameScreen();
 		
+		player.gameObject.SetActive(true);
 		gameLoopState = GameLoopState.StartWave;
 	}
 	
@@ -98,7 +99,7 @@ public class GameLoopController : MonoBehaviour
 	{
 		enemyManager.StartWave(++waveNumber);
 		gameLoopState = GameLoopState.InGame;
-		UpdateGUI();	
+		titleScreenController.UpdateScoreAndWaveLabels(score, waveNumber);
 	}
 		
 	private void OnInGame(float deltaTime)
@@ -113,25 +114,22 @@ public class GameLoopController : MonoBehaviour
 	private void OnGameOver()
 	{
 		enemyManager.StopEnemySpawning();
-	}
-	
-	private void UpdateGUI()
-	{
-		scoreLabel.text = string.Format("{0:00000000}", score);
-		waveLabel.text = string.Format("{0:00}", waveNumber);
+		titleScreenController.ShowGameOverScreen();
+		
+		// Should have a delay here before we switch over to the title screen, no?
 	}
 	
 	private void PlayerDestroyed()
 	{
 		player.gameObject.SetActive(false);
 		gameLoopState = GameLoopState.GameOver;
-		UpdateGUI();
+		titleScreenController.UpdateScoreAndWaveLabels(score, waveNumber);
 	}
 	
 	private void EnemyDestroyed()
 	{
 		score += 10;
-		UpdateGUI();
+		titleScreenController.UpdateScoreAndWaveLabels(score, waveNumber);
 
 		if (enemyManager.IsWaveClear)
 			gameLoopState = GameLoopState.StartWave;
