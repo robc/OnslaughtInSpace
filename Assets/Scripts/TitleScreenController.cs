@@ -19,7 +19,7 @@ public class TitleScreenController : MonoBehaviour
 	{
 		titleLabel.gameObject.SetActive(true);
 		startGameActionLabel.gameObject.SetActive(true);
-		// instructionsCreditsLabel.gameObject.SetActive(true);
+		instructionsCreditsLabel.gameObject.SetActive(true);
 		
 		gameOverLabel.gameObject.SetActive(false);
 		gameCompleteTitleLabel.gameObject.SetActive(false);
@@ -32,6 +32,7 @@ public class TitleScreenController : MonoBehaviour
 		titleLabel.gameObject.SetActive(false);
 		startGameActionLabel.gameObject.SetActive(false);
 		gameOverLabel.gameObject.SetActive(false);
+		instructionsCreditsLabel.gameObject.SetActive(false);
 
 		gameCompleteTitleLabel.gameObject.SetActive(false);
 		gameCompleteMessageLabel.gameObject.SetActive(false);
@@ -44,6 +45,7 @@ public class TitleScreenController : MonoBehaviour
 
 		titleLabel.gameObject.SetActive(false);
 		startGameActionLabel.gameObject.SetActive(false);
+		instructionsCreditsLabel.gameObject.SetActive(false);
 		
 		gameCompleteTitleLabel.gameObject.SetActive(false);
 		gameCompleteMessageLabel.gameObject.SetActive(false);
@@ -56,6 +58,7 @@ public class TitleScreenController : MonoBehaviour
 		
 		titleLabel.gameObject.SetActive(false);
 		startGameActionLabel.gameObject.SetActive(false);
+		instructionsCreditsLabel.gameObject.SetActive(false);
 		
 		gameCompleteTitleLabel.gameObject.SetActive(true);
 		gameCompleteMessageLabel.gameObject.SetActive(true);
