@@ -56,34 +56,56 @@ public class EnemyManager : MonoBehaviour
 	{
 		get
 		{
-			// This is intended to be more dynamic. But for now this is sufficient.
-			return 10;
+			if (currentWaveNumber < 5)
+				return 20;
+			else if (currentWaveNumber < 8)
+				return 40;
+			else if (currentWaveNumber < 10)
+				return 80;
+			else
+				return 160;
+		}
+	}
+	
+	private int NumberOfEnemiesPerGroup
+	{
+		get
+		{
+			if (currentWaveNumber < 5)
+				return 2;
+			else if (currentWaveNumber < 8)
+				return 4;
+			else if (currentWaveNumber < 10)
+				return 8;
+			else
+				return 16;
 		}
 	}
 	
 	private IEnumerator SpawnEnemiesForWave()
 	{
-		// Intent here is to spawn them in groups. Not necessary for now.
-		// int totalToSpawn = NumberOfEnemiesForCurrentWave;
-		// 
-		
-		for (int count = 0; count < NumberOfEnemiesForCurrentWave; count++)
+		int numberOfGroups = NumberOfEnemiesForCurrentWave / NumberOfEnemiesPerGroup;
+		for (int count = 0; count < numberOfGroups; count++)
 		{
-			EnemyCollision enemy = (EnemyCollision)Instantiate(enemyPrefab);
-			enemy.OnEnemyDestroyed = EnemyDestroyed;
-			enemy.OnEnemyReachedTarget = EnemyReachedTarget;
-			spawnedEnemies.Add(enemy);
-			
-			float angle = Random.value * 359.0f;
-			Vector3 position = new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad), 0, Mathf.Sin(angle * Mathf.Deg2Rad));
-			enemy.transform.position = position * ((Random.value * spawnDistanceDelta) + minSpawnDistance);
-			
-			Vector3 vectorToTarget = target.transform.position - enemy.transform.position;
-			float headingToTarget = Mathf.Atan2(vectorToTarget.x, vectorToTarget.z) * Mathf.Rad2Deg;
-			enemy.transform.rotation = Quaternion.Euler(0, headingToTarget, 0);
-			enemy.rigidbody.AddForce(enemy.transform.TransformDirection(Vector3.forward) * ((Random.value * enemyForceDelta) + minEnemyForce));
-			
-			numberOfEnemiesSpawned++;
+			for (int member = 0; member < NumberOfEnemiesPerGroup; member++)
+			{
+				EnemyCollision enemy = (EnemyCollision)Instantiate(enemyPrefab);
+				enemy.OnEnemyDestroyed = EnemyDestroyed;
+				enemy.OnEnemyReachedTarget = EnemyReachedTarget;
+				spawnedEnemies.Add(enemy);
+				
+				float angle = Random.value * 359.0f;
+				Vector3 position = new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad), 0, Mathf.Sin(angle * Mathf.Deg2Rad));
+				enemy.transform.position = position * ((Random.value * spawnDistanceDelta) + minSpawnDistance);
+				
+				Vector3 vectorToTarget = target.transform.position - enemy.transform.position;
+				float headingToTarget = Mathf.Atan2(vectorToTarget.x, vectorToTarget.z) * Mathf.Rad2Deg;
+				enemy.transform.rotation = Quaternion.Euler(0, headingToTarget, 0);
+				enemy.rigidbody.AddForce(enemy.transform.TransformDirection(Vector3.forward) * ((Random.value * enemyForceDelta) + minEnemyForce));
+				
+				numberOfEnemiesSpawned++;
+			}
+
 			yield return new WaitForSeconds(delayBetweenEnemyGroups);
 		}
 	}
