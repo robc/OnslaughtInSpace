@@ -28,8 +28,9 @@ public class GameLoopController : MonoBehaviour
 	void Awake()
 	{
 		gameLoopState = GameLoopState.Init;
-		
 		fireIsDown = false;
+		
+		enemyManager.OnEnemyDestroyed = EnemyDestroyed;
 	}
 	
 	void Start()
@@ -90,7 +91,7 @@ public class GameLoopController : MonoBehaviour
 	private void OnStartGame()
 	{
 		score = 0;
-		waveNumber = 1;
+		waveNumber = 0;
 		UpdateGUI();
 		
 		gameLoopState = GameLoopState.StartWave;
@@ -98,8 +99,9 @@ public class GameLoopController : MonoBehaviour
 	
 	private void OnStartWave()
 	{
-		enemyManager.StartWave(waveNumber);
+		enemyManager.StartWave(++waveNumber);
 		gameLoopState = GameLoopState.InGame;
+		UpdateGUI();	
 	}
 		
 	private void OnInGame(float deltaTime)
@@ -109,17 +111,25 @@ public class GameLoopController : MonoBehaviour
 		if (fireIsDown && !Input.GetButton("Fire"))
 			playerLauncher.FireBullet();
 		fireIsDown = Input.GetButton("Fire");
-		
-		
 	}
 	
 	private void OnGameOver()
 	{
+		enemyManager.StopEnemySpawning();
 	}
 	
 	private void UpdateGUI()
 	{
 		scoreLabel.text = string.Format("{0:00000000}", score);
 		waveLabel.text = string.Format("{0:00}", waveNumber);
+	}
+	
+	private void EnemyDestroyed()
+	{
+		score += 10;
+		UpdateGUI();
+
+		if (enemyManager.IsWaveClear)
+			gameLoopState = GameLoopState.StartWave;
 	}
 }

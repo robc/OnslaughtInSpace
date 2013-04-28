@@ -1,9 +1,12 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class EnemyManager : MonoBehaviour
 {
-	[SerializeField] private GameObject enemyPrefab;
+	public System.Action OnEnemyDestroyed;
+	
+	[SerializeField] private EnemyCollision enemyPrefab;
 	[SerializeField] private Transform target;
 	[SerializeField] private float delayBetweenEnemyGroups = 1.5f;
 	[SerializeField] private float minSpawnDistance;
@@ -15,9 +18,12 @@ public class EnemyManager : MonoBehaviour
 	private int numberOfEnemiesSpawned;
 	private float spawnDistanceDelta;
 	private float enemyForceDelta;
+	private List <EnemyCollision> spawnedEnemies;
 	
 	void Awake()
 	{
+		spawnedEnemies = new List<EnemyCollision>();
+
 		spawnDistanceDelta = maxSpawnDistance - minSpawnDistance;
 		enemyForceDelta = maxEnemyForce - minEnemyForce;
 	}
@@ -30,9 +36,19 @@ public class EnemyManager : MonoBehaviour
 		StartCoroutine("SpawnEnemiesForWave");
 	}
 	
+	public void StopEnemySpawning()
+	{
+		StopCoroutine("SpawnEnemiesForWave");
+	}
+	
 	public bool IsSpawningComplete
 	{
 		get { return numberOfEnemiesSpawned == NumberOfEnemiesForCurrentWave; }
+	}
+	
+	public bool IsWaveClear
+	{
+		get { return IsSpawningComplete && spawnedEnemies.Count == 0; }
 	}
 	
 	private int NumberOfEnemiesForCurrentWave
@@ -52,7 +68,10 @@ public class EnemyManager : MonoBehaviour
 		
 		for (int count = 0; count < NumberOfEnemiesForCurrentWave; count++)
 		{
-			GameObject enemy = (GameObject)Instantiate(enemyPrefab);
+			EnemyCollision enemy = (EnemyCollision)Instantiate(enemyPrefab);
+			enemy.OnEnemyDestroyed = EnemyDestroyed;
+			enemy.OnEnemyReachedTarget = EnemyReachedTarget;
+			spawnedEnemies.Add(enemy);
 			
 			float angle = Random.value * 359.0f;
 			Vector3 position = new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad), 0, Mathf.Sin(angle * Mathf.Deg2Rad));
@@ -62,8 +81,32 @@ public class EnemyManager : MonoBehaviour
 			float headingToTarget = Mathf.Atan2(vectorToTarget.x, vectorToTarget.z) * Mathf.Rad2Deg;
 			enemy.transform.rotation = Quaternion.Euler(0, headingToTarget, 0);
 			enemy.rigidbody.AddForce(enemy.transform.TransformDirection(Vector3.forward) * ((Random.value * enemyForceDelta) + minEnemyForce));
-
+			
+			numberOfEnemiesSpawned++;
 			yield return new WaitForSeconds(delayBetweenEnemyGroups);
 		}
+	}
+	
+	private void EnemyDestroyed(EnemyCollision enemy)
+	{
+		spawnedEnemies.Remove(enemy);
+		Destroy(enemy.gameObject);
+
+		// Trigger an explosion effect.
+		// Play an explosion sound.
+
+		if (OnEnemyDestroyed != null)
+			OnEnemyDestroyed();
+	}
+	
+	private void EnemyReachedTarget(EnemyCollision enemy)
+	{
+		EnemyCollision [] enemies = spawnedEnemies.ToArray();
+		spawnedEnemies.Clear();
+		
+		for (int count = 0; count < enemies.Length; count++)
+			Destroy(enemies[count].gameObject);
+		
+		// Fire an event to signify the game over.
 	}
 }
