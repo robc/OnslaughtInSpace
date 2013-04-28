@@ -8,6 +8,7 @@ public class GameLoopController : MonoBehaviour
 		Init,
 		TitleScreen,
 		StartGame,
+		StartWave,
 		InGame,
 		GameOver
 	};
@@ -16,6 +17,7 @@ public class GameLoopController : MonoBehaviour
 	[SerializeField] private TextMesh waveLabel;
 	[SerializeField] private PlayerMovement player;
 	[SerializeField] private Launcher playerLauncher;
+	[SerializeField] private EnemyManager enemyManager;
 	
 	private GameLoopState gameLoopState;
 	private int waveNumber;
@@ -53,6 +55,12 @@ public class GameLoopController : MonoBehaviour
 				OnStartGame();
 				break;
 			}
+			case GameLoopState.StartWave:
+			{
+				OnStartWave();
+				break;
+			}
+			
 			case GameLoopState.InGame:
 			{
 				OnInGame(Time.smoothDeltaTime);
@@ -85,9 +93,15 @@ public class GameLoopController : MonoBehaviour
 		waveNumber = 1;
 		UpdateGUI();
 		
-		gameLoopState = GameLoopState.InGame;
+		gameLoopState = GameLoopState.StartWave;
 	}
 	
+	private void OnStartWave()
+	{
+		enemyManager.StartWave(waveNumber);
+		gameLoopState = GameLoopState.InGame;
+	}
+		
 	private void OnInGame(float deltaTime)
 	{
 		player.UpdatePlayerRotation(Input.GetAxis("Horizontal"), deltaTime);
@@ -95,6 +109,8 @@ public class GameLoopController : MonoBehaviour
 		if (fireIsDown && !Input.GetButton("Fire"))
 			playerLauncher.FireBullet();
 		fireIsDown = Input.GetButton("Fire");
+		
+		
 	}
 	
 	private void OnGameOver()
