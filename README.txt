@@ -16,6 +16,12 @@ Built using Unity Pro 4.1.2. I've not used any Pro specific functionality, so yo
 
 Open Assets/Scenes/MainScene in the Unity Editor & you should be good to go.
 
+License
+-------
+This game & its source project are released under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0) license.
+
+For more details about this license, check out: http://creativecommons.org/licenses/by-nc-sa/3.0/
+
 Contact Details
 ---------------
 Web:		http://www.rob-caporetto.com
